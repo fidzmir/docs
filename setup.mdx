@@ -7,6 +7,16 @@ description: "How administrators configure TCBot: scan the QR code, set environm
 As an administrator, you set up TCBot once so every operator on your team can start using it immediately. Setup involves three things: providing your API keys in a `.env` file, installing dependencies, and scanning a QR code to link TCBot to a WhatsApp account. Once connected, the bot runs continuously and reconnects automatically after restarts.
 
 <Steps>
+  <Step title="Confirm Node.js is installed">
+    TCBot requires **Node.js** (version 18 or later). Verify your installation by running:
+
+    ```bash
+    node --version
+    ```
+
+    If Node.js is not installed, download and install it from [nodejs.org](https://nodejs.org) before continuing.
+  </Step>
+
   <Step title="Create a .env file with your API keys">
     In the root of your TCBot project directory, create a file named `.env` and add the following:
 
@@ -53,14 +63,14 @@ As an administrator, you set up TCBot once so every operator on your team can st
     4. Tap **Link a Device**.
     5. Point your phone's camera at the QR code in the terminal.
 
-    WhatsApp confirms the link on your phone and the terminal begins the authentication handshake.
+    WhatsApp confirms the link on your phone and the terminal completes the authentication handshake.
   </Step>
 
   <Step title="Verify the connection">
     Watch the terminal output. Once authentication completes successfully, you will see:
 
     ```
-    ✅ WHATSAPP CONNECTED!
+    ✅ WHATSAPP TERHUBUNG!
     ```
 
     TCBot is now live. Operators can send commands to the bot's WhatsApp number immediately.
@@ -76,9 +86,9 @@ After a successful connection, TCBot saves the WhatsApp session locally in a fol
 - Do not delete the `auth_info_baileys/` folder unless you intentionally want to reset the session.
 
 <Warning>
-  If the bot is logged out remotely — for example, if someone removes it from **Linked Devices** on the phone, or WhatsApp returns a 401 or 403 status — TCBot automatically clears the `auth_info_baileys/` folder to prevent a corrupted state. When this happens, restart the server with `node server.js` and re-scan the QR code to re-establish the connection.
+  If the bot is logged out remotely — for example, if someone removes it from **Linked Devices** on the phone, or WhatsApp returns a session error — TCBot automatically clears the `auth_info_baileys/` folder to prevent a corrupted state. When this happens, restart the server with `node server.js` and re-scan the QR code to re-establish the connection.
 </Warning>
 
 <Note>
-  TCBot listens on port **8080** for incoming webhook requests. This port is used to trigger automated shift reports from external schedulers or cron jobs. If you use the cron report feature, ensure port 8080 is reachable from whatever system sends the trigger — check your firewall rules and, if the server is behind a load balancer or reverse proxy, confirm the port is forwarded correctly.
+  TCBot listens on port **8080** for incoming webhook requests. This port receives report-forwarding payloads — for example, from an external scheduler that triggers automated shift reports. If you use this feature, ensure port 8080 is reachable from the system sending the trigger. Check your firewall rules and, if the server is behind a load balancer or reverse proxy, confirm the port is forwarded correctly.
 </Note>

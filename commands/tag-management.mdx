@@ -1,5 +1,5 @@
 ---
-title: "View and Close TPM Tags with /openlist and /close"
+title: "View and Close TPM Red Tags with /openlist and /close"
 sidebarTitle: "Tag Management"
 description: "Use /openlist to see all open TPM tags, /open to view tag details, and /close to complete a repair and close a tag with photo evidence."
 ---
@@ -16,7 +16,7 @@ Send `/openlist` to retrieve every tag currently in **OPEN** status. TCBot retur
 
 ```text
 You: /openlist
-TCBot: 📋 OPEN TAG LIST:
+TCBot: 📋 DAFTAR TAG OPEN:
 
        1. AM-HPL-0001 - Bocor, Mesin Calender
        2. AM-ADH-0003 - Rusak, Mixing Tank
@@ -30,20 +30,20 @@ Use the tag codes from this list with `/open` or `/close`.
 
 **Syntax:** `/open AM-HPL-0001`
 
-Send `/open` followed by a tag code to retrieve its full record, including all fields entered during creation and any attached photo.
+Send `/open` followed by a tag code to retrieve its full record. TCBot returns all fields entered at creation time — and if a photo was attached when the tag was created, TCBot sends it as well.
 
 ```text
 You: /open AM-HPL-0001
-TCBot: 📄 TAG DETAIL: AM-HPL-0001
+TCBot: 📄 DETAIL TAG: AM-HPL-0001
 
        Status: OPEN
-       Date: 01/06/2025
-       Machine: Calender
-       Reporter: Ahmad
+       Tanggal: 01/06/2025
+       Mesin: Calender
+       Pelapor: Ahmad
        Abnormality: Bocor
        Contamination: Pelumas
        Hard to Access: Membersihkan
-       Description: Oil leak on left bearing
+       Deskripsi: Oil leak on left bearing
 ```
 
 <Note>
@@ -64,8 +64,10 @@ Send `/close` followed by a tag code to begin the closure flow. TCBot requires p
 
     ```text
     You: /close AM-HPL-0001
-    TCBot: 🔖 Closing tag AM-HPL-0001 — Bocor, Mesin Calender
-           Please send a photo of the completed repair.
+    TCBot: ✅ Process Tutup Tag: AM-HPL-0001
+
+           Silakan kirimkan FOTO BUKTI perbaikan untuk menutup tag ini.
+           (Atau ketik /cancel untuk membatalkan)
     ```
   </Step>
 
@@ -80,6 +82,15 @@ Send `/close` followed by a tag code to begin the closure flow. TCBot requires p
   <Step title="Review and confirm">
     TCBot shows a closure confirmation summary.
 
+    ```text
+    TCBot: 📝 KONFIRMASI TUTUP TAG
+
+           Tag: AM-HPL-0001
+
+           1. Konfirmasi Tutup
+           2. Batal
+    ```
+
     - Type `1` to **confirm** and close the tag.
     - Type `2` to **cancel** and leave the tag open.
   </Step>
@@ -88,11 +99,17 @@ Send `/close` followed by a tag code to begin the closure flow. TCBot requires p
     On success, TCBot updates the tag's status to **CLOSE** in Google Sheets and confirms the change.
 
     ```text
-    TCBot: ✅ Tag AM-HPL-0001 has been closed successfully.
+    TCBot: ✅ BERHASIL! Tag AM-HPL-0001 telah ditutup (CLOSE).
+    ```
+
+    If the tag code was not found in the database, TCBot returns an error instead.
+
+    ```text
+    TCBot: ❌ GAGAL! Tag AM-HPL-0001 tidak ditemukan di database.
     ```
   </Step>
 </Steps>
 
 <Note>
-  If the tag code is not found, TCBot will notify you. Verify the correct code with `/openlist` and try again.
+  If the tag code is not found, verify the correct code with `/openlist` and try again.
 </Note>

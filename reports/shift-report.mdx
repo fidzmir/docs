@@ -1,7 +1,7 @@
 ---
-title: "Automated Shift Production Reports via WhatsApp"
+title: "Shift Production Report: Content, Format, and Delivery"
 sidebarTitle: "Shift Report"
-description: "TCBot automatically compiles and delivers shift production reports to your WhatsApp group, pulling live data from Google Sheets for all active treating lines."
+description: "TCBot reads live production data from Google Sheets and sends a formatted shift report covering output, rejects, and downtime to your WhatsApp group."
 ---
 
 TCBot's automated shift report collects production output, reject counts, and downtime from your Google Sheets and delivers a formatted summary directly to your WhatsApp group — no manual data compilation required.
@@ -26,10 +26,10 @@ Here is an example of the report format delivered to your WhatsApp group:
 ```text
 Laporan Hasil Treating - A1
 Hari & Tanggal  =  Monday, 1 June 2025
-Shift           =  2
-Tim             =  [team name]
-Jam Kerja       =  7
-Total DT        =  1,50
+Shift                  =  2
+Tim                     =  [team]
+Jam Kerja          =  7
+Total DT            =  1,50
 
 --------------------
 Treating 1
@@ -100,8 +100,8 @@ Use the following payload shape when calling the webhook directly:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `targetJid` | `string` | No | WhatsApp group or contact JID to deliver the report to. Defaults to the configured production group (`628817433101-1550727854@g.us`). |
-| `message` | `string` | Yes | The text message sent alongside the file or on its own. |
+| `targetJid` | `string` | No | WhatsApp group or contact JID to deliver the report to. Defaults to the configured fallback contact if not provided. |
+| `message` | `string` | No | The text message sent to the target. Omit to send a file only. |
 | `fileUrl` | `string` | No | URL of a rendered PDF or image from CraftMyPDF. Omit to send text only. |
 | `isPdf` | `boolean` | No | Set to `true` to send the file as a PDF attachment. Set to `false` to send it as an image with caption. |
 

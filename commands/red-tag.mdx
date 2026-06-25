@@ -1,5 +1,5 @@
 ---
-title: "Create a TPM Red Tag with /am"
+title: "Create a TPM Red Tag in WhatsApp with the /am Command"
 sidebarTitle: "Red Tag (/am)"
 description: "Use the /am command in WhatsApp to create a TPM red tag. TCBot guides you through machine, abnormality, photo, and confirmation steps."
 ---
@@ -15,7 +15,7 @@ The `/am` command starts a guided red tag creation flow directly in WhatsApp. TC
     ```
     You: /am
     TCBot: Halo [Name]!
-           Choose Sheet:
+           Pilih Sheet:
            1. Produksi HPL
            2. Produksi Adhesive
            3. Produksi Flooring
@@ -36,7 +36,7 @@ The `/am` command starts a guided red tag creation flow directly in WhatsApp. TC
     ```
     You: 1
     TCBot: ✅ Sheet: Produksi HPL
-           2. Dept Code (HPL/ADH/FLR/PVC):
+           2. Kode Dept (HPL/ADH/FLR/PVC):
     ```
   </Step>
 
@@ -46,12 +46,26 @@ The `/am` command starts a guided red tag creation flow directly in WhatsApp. TC
     ```
     You: HPL
     TCBot: ✅ Dept: HPL
-           3. Machine Name:
+           3. Nama Mesin:
     ```
   </Step>
 
   <Step title="Enter the machine name">
     Type the name of the machine where the issue was found (e.g., `Calender`, `Mixing Tank`).
+
+    ```
+    You: Calender
+    TCBot: ✅ Mesin: Calender
+           4. Pilih Abnormality (Contoh: 1,3):
+           1. Bocor
+           2. Usang
+           3. Rusak
+           4. Kendur
+           5. Hilang
+           6. Cacat
+           7. Lain-Lain
+           0. Kosong
+    ```
   </Step>
 
   <Step title="Select abnormality types">
@@ -66,7 +80,7 @@ The `/am` command starts a guided red tag creation flow directly in WhatsApp. TC
     | `5` | Hilang |
     | `6` | Cacat |
     | `7` | Lain-Lain |
-    | `0` | Empty (none) |
+    | `0` | Kosong (none) |
 
     <Tip>
       Both `1,3` and `1 3` are valid — use whichever format feels faster. The same multi-select format applies to contamination and hard-to-access options.
@@ -84,7 +98,7 @@ The `/am` command starts a guided red tag creation flow directly in WhatsApp. TC
     | `4` | Limbah |
     | `5` | Kotoran |
     | `6` | Korosi |
-    | `0` | Empty (none) |
+    | `0` | Kosong (none) |
   </Step>
 
   <Step title="Select hard-to-access issues">
@@ -97,7 +111,7 @@ The `/am` command starts a guided red tag creation flow directly in WhatsApp. TC
     | `3` | Melumasi |
     | `4` | Mengganti |
     | `5` | Mengencangkan |
-    | `0` | Empty (none) |
+    | `0` | Kosong (none) |
   </Step>
 
   <Step title="Enter a description">
@@ -118,7 +132,13 @@ The `/am` command starts a guided red tag creation flow directly in WhatsApp. TC
     - Type `1` to **submit** the tag.
     - Type `2` to **cancel** without saving.
 
-    On a successful submission, TCBot assigns a unique tag code (e.g., `AM-HPL-0001`) and saves the record to your Google Sheet. You can view the tag immediately with `/open AM-HPL-0001` or find it in `/openlist`.
+    On a successful submission, TCBot confirms the record has been saved to your Google Sheet.
+
+    ```
+    TCBot: ✅ BERHASIL! Data Red Tag telah tercatat.
+    ```
+
+    You can view the tag immediately with `/open [TAG_CODE]` or find it in `/openlist`.
   </Step>
 </Steps>
 
@@ -127,7 +147,7 @@ The `/am` command starts a guided red tag creation flow directly in WhatsApp. TC
 ```text
 You: /am
 TCBot: Halo [Name]!
-       Choose Sheet:
+       Pilih Sheet:
        1. Produksi HPL
        2. Produksi Adhesive
        3. Produksi Flooring
@@ -135,19 +155,67 @@ TCBot: Halo [Name]!
 
 You: 1
 TCBot: ✅ Sheet: Produksi HPL
-       2. Dept Code (HPL/ADH/FLR/PVC):
+       2. Kode Dept (HPL/ADH/FLR/PVC):
 
 You: HPL
 TCBot: ✅ Dept: HPL
-       3. Machine Name:
+       3. Nama Mesin:
 
 You: Calender
-TCBot: ✅ Machine: Calender
-       4. Abnormality (e.g. 1,3 or 1 3):
-       1=Bocor 2=Usang 3=Rusak 4=Kendur
-       5=Hilang 6=Cacat 7=Lain-Lain 0=Empty
+TCBot: ✅ Mesin: Calender
+       4. Pilih Abnormality (Contoh: 1,3):
+       1. Bocor
+       2. Usang
+       3. Rusak
+       4. Kendur
+       5. Hilang
+       6. Cacat
+       7. Lain-Lain
+       0. Kosong
 
 You: 1,3
-TCBot: ✅ Abnormality: Bocor, Rusak
-       5. Contamination ...
+TCBot: ✅ Abnormal: Bocor, Rusak
+       5. Pilih Contamination:
+       1. Pelumas
+       2. Air/Cairan
+       3. Produk
+       4. Limbah
+       5. Kotoran
+       6. Korosi
+       0. Kosong
+
+You: 0
+TCBot: ✅ Contam:
+       6. Pilih Hard To Access:
+       1. Membersihkan
+       2. Memeriksa
+       3. Melumasi
+       4. Mengganti
+       5. Mengencangkan
+       0. Kosong
+
+You: 1
+TCBot: ✅ Access: Membersihkan
+       7. Deskripsi Singkat:
+
+You: Oil leak on left bearing
+TCBot: ✅ Desk: Oil leak on left bearing
+       8. Kirim Foto Temuan:
+
+You: [sends photo]
+TCBot: 📝 KONFIRMASI RED TAG
+
+       Sheet: Produksi HPL
+       Dept: HPL
+       Mesin: Calender
+       Abnormality: Bocor, Rusak
+       Contamination: -
+       Hard To Access: Membersihkan
+       Deskripsi: Oil leak on left bearing
+
+       1. Kirim
+       2. Batal
+
+You: 1
+TCBot: ✅ BERHASIL! Data Red Tag telah tercatat.
 ```

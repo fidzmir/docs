@@ -1,5 +1,5 @@
 ---
-title: "Scan Product Labels with AI Using /input"
+title: "Scan Product Labels Automatically with AI Using /input"
 sidebarTitle: "OCR Scan (/input)"
 description: "Use /input [ITEM_CODE] to photograph a product label and have TCBot's AI automatically extract and validate the lot number for your Google Sheet."
 ---
@@ -25,9 +25,13 @@ Each item code expects a specific lot number format. Make sure the format area o
 | `33F161`, `33F198`, `36F161` | 6 digits + letter `A` + 9 digits (e.g., `123456A123456789`) |
 | `33P160` | Pattern: `NNNNNN-XXXX-N-NN-NN` |
 | `33P150` | 6-digit prefix with optional separators |
-| `30R061` | 5 digits, dash, 1 letter, 1 digit (e.g., `12345-A1`) |
-| `35I161` | `HT` + 10 digits, or a 9–10 digit number |
-| `35O190` | 1 digit, 1 letter, 6 digits |
+| `30R061` | 5 digits, dash, 1 uppercase letter, 1 digit (e.g., `12345-A1`) |
+| `35I161` | `HT` + 10 digits, or a 9–10 digit number (e.g., `701364976`) |
+| `35O190` | 1 digit, 1 uppercase letter, 6 digits |
+
+<Note>
+  Not sure which item code to use? Check the item code printed on the product label or refer to your team's item list in [Item Rules](/configuration/item-rules).
+</Note>
 
 ## How to Scan a Label
 
@@ -42,8 +46,8 @@ Each item code expects a specific lot number format. Make sure the format area o
     TCBot confirms the item code and prompts you to send a photo.
 
     ```text
-    TCBot: ✅ Item Code: 33G198
-           Please send a photo of the product label.
+    TCBot: ✅ Kode Item Terbaca: 33G198
+           Silakan kirimkan FOTO LABEL produk sekarang untuk dideteksi secara cerdas oleh AI.
     ```
   </Step>
 
@@ -61,17 +65,29 @@ Each item code expects a specific lot number format. Make sure the format area o
 
   <Step title="AI analyzes the image">
     TCBot sends the photo to Google Gemini AI, which locates and extracts the lot number, then validates it against the expected format for your item code.
+
+    ```text
+    TCBot: ⏳ Foto diterima. Mengunduh gambar media dari WhatsApp...
+    TCBot: ⏳ Gambar berhasil dimuat ke server. Memproses analisis pola visual AI...
+    ```
   </Step>
 
   <Step title="Receive the result">
     If a valid lot number is found and matches the expected format, TCBot logs it to Google Sheets and confirms success.
 
     ```text
-    TCBot: ✅ Logged to Sheet! Item: 33G198 | Lot: 12345
+    TCBot: ✅ Logged to Sheet!
+
+           Item: 33G198
+           Lot: `12345`
     ```
 
     <Note>
-      If the AI cannot find a lot number that matches the item's expected format, TCBot replies with `NOT_FOUND` and the flow ends without saving anything. Try again with a clearer or closer photo of the label.
+      If the AI cannot find a lot number that matches the item's expected format, TCBot replies with the message below and the flow ends without saving anything. Try again with a clearer or closer photo of the label.
+
+      ```text
+      TCBot: ❌ AI tidak dapat menemukan nomor lot/reel yang sesuai dengan spesifikasi aturan pola untuk item 33G198.
+      ```
     </Note>
   </Step>
 </Steps>

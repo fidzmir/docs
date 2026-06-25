@@ -28,12 +28,13 @@ You only need WhatsApp to use TCBot — no app downloads, no account registratio
   <Step title="Send /am to create your first red tag">
     Send the `/am` command to start a guided red tag creation flow. TCBot asks you a series of short questions — answer each one by replying with the number or text it requests.
 
-    Here is a sample conversation:
+    Here is a complete sample conversation:
 
     ```
     You:    /am
 
-    TCBot:  Halo [Name]! Choose Sheet:
+    TCBot:  Halo [Name]!
+            Pilih Sheet:
             1. Produksi HPL
             2. Produksi Adhesive
             3. Produksi Flooring
@@ -42,14 +43,87 @@ You only need WhatsApp to use TCBot — no app downloads, no account registratio
     You:    1
 
     TCBot:  ✅ Sheet: Produksi HPL
-            2. Dept Code (HPL/ADH/FLR/PVC):
+
+            2. Kode Dept (HPL/ADH/FLR/PVC):
+
+    You:    HPL
+
+    TCBot:  ✅ Dept: HPL
+
+            3. Nama Mesin:
+
+    You:    Press Line 3
+
+    TCBot:  ✅ Mesin: Press Line 3
+
+            4. Pilih Abnormality (Contoh: 1,3):
+            1. Bocor
+            2. Usang
+            3. Rusak
+            4. Kendur
+            5. Hilang
+            6. Cacat
+            7. Lain-Lain
+            0. Kosong
+
+    You:    3
+
+    TCBot:  ✅ Abnormal: Rusak
+
+            5. Pilih Contamination:
+            1. Pelumas
+            2. Air/Cairan
+            3. Produk
+            4. Limbah
+            5. Kotoran
+            6. Korosi
+            0. Kosong
+
+    You:    0
+
+    TCBot:  ✅ Contam:
+
+            6. Pilih Hard To Access:
+            1. Membersihkan
+            2. Memeriksa
+            3. Melumasi
+            4. Mengganti
+            5. Mengencangkan
+            0. Kosong
+
+    You:    4
+
+    TCBot:  ✅ Access: Mengganti
+
+            7. Deskripsi Singkat:
+
+    You:    Roller aus, perlu penggantian segera
+
+    TCBot:  ✅ Desk: Roller aus, perlu penggantian segera
+
+            8. Kirim Foto Temuan:
+
+    You:    [sends photo]
+
+    TCBot:  📝 KONFIRMASI RED TAG
+
+            Sheet: Produksi HPL
+            Dept: HPL
+            Mesin: Press Line 3
+            Abnormality: Rusak
+            Contamination: -
+            Hard To Access: Mengganti
+            Deskripsi: Roller aus, perlu penggantian segera
+
+            1. Kirim
+            2. Batal
+
+    You:    1
+
+    TCBot:  ✅ BERHASIL! Data Red Tag telah tercatat.
     ```
 
-    Continue replying to each prompt as TCBot guides you through department code, machine ID, defect description, and severity level.
-  </Step>
-
-  <Step title="Follow the prompts through to submission">
-    Answer each question TCBot asks until you reach the confirmation step. TCBot shows you a summary of the tag you are about to create. Reply to confirm, and the red tag is saved instantly.
+    For steps 4–6 (Abnormality, Contamination, Hard To Access), you can select multiple options by separating numbers with commas — for example, reply `1,3` to select the first and third items. Reply `0` to leave a field empty.
   </Step>
 </Steps>
 

@@ -1,7 +1,7 @@
 ---
 title: "Connect TCBot to Google Sheets for Tag and Report Data"
 sidebarTitle: "Google Sheets"
-description: "Set up the Google Sheets integration that powers TCBot's red tag storage, data queries, and automated shift report generation."
+description: "Set up Google Sheets for TCBot: Apps Script handles tag management commands, while a service account powers automated shift report generation."
 ---
 
 TCBot integrates with Google Sheets in two ways: via Google Apps Script for real-time tag management and queries, and via the Sheets API v4 with a service account for automated report generation.
@@ -13,7 +13,7 @@ The Apps Script integration handles all live, operator-facing commands:
 - **Commands powered by this integration:** `/am`, `/close`, `/open`, `/openlist`, `/ngobrol`, `/cek`
 - **Supported actions:** `saveTag`, `closeTag`, `getList`, `getDetail`, `getRawData`
 
-Your Google Apps Script web app receives HTTP POST requests from TCBot and reads or writes tag data in your spreadsheet. The script URL is configured directly in the bot's handler files — contact your administrator if the URL needs to be updated.
+Your Google Apps Script web app receives HTTP POST requests from TCBot and reads or writes tag data in your spreadsheet. The Apps Script web app URL is configured directly in the bot's handler files — contact your administrator if the URL needs to be updated.
 
 <Note>
   When deploying your Apps Script as a web app, set **Who has access** to **Anyone**. This allows the TCBot server to POST requests to the script without authentication headers.
@@ -84,21 +84,26 @@ The cron report reads data from four machine sheets — T3 through T6 — split 
 
 | Machine | Spreadsheet | Sheet Tab | Output Column | Reject Column |
 |---------|-------------|-----------|---------------|---------------|
-| T3 | `SPREADSHEET_ID_B` | `T3` | AV (index 47) | AY (index 50) |
-| T4 | `SPREADSHEET_ID_B` | `T4` | AV (index 47) | AY (index 50) |
-| T5 | `SPREADSHEET_ID_C` | `T5` | BB (index 53) | BT (index 71) |
-| T6 | `SPREADSHEET_ID_C` | `T6` | BB (index 53) | BT (index 71) |
+| T3 | Spreadsheet B | `T3` | AV (index 47) | AY (index 50) |
+| T4 | Spreadsheet B | `T4` | AV (index 47) | AY (index 50) |
+| T5 | Spreadsheet C | `T5` | BB (index 53) | BT (index 71) |
+| T6 | Spreadsheet C | `T6` | BB (index 53) | BT (index 71) |
 
 In addition, each row must include the following columns for the report to group data correctly by shift:
 
-| Column | Content | Format |
-|--------|---------|--------|
-| A | Date | `dd/MM/yyyy` |
-| C | Team name | Text |
-| D | Shift number | Number |
-| H | Downtime reason | Text |
-| I | Downtime start time | Time |
-| J | Downtime end time | Time |
+| Column | Index | Content | Format |
+|--------|-------|---------|--------|
+| A | 0 | Date | `dd/MM/yyyy` |
+| C | 2 | Team name | Text |
+| D | 3 | Shift number | Number |
+
+The bot also reads downtime data from columns H through K (indices 7–10). These four columns work together with fallback logic: the bot checks column H (index 7) for the downtime reason and falls back to column I (index 8) if H does not contain a text value; it checks column I (index 8) for the start time and falls back to column J (index 9); it checks column J (index 9) for the end time and falls back to column K (index 10). Make sure your sheet keeps downtime entries within this range.
+
+| Columns | Indices | Content |
+|---------|---------|---------|
+| H–I | 7–8 | Downtime reason (text, non-numeric) |
+| I–J | 8–9 | Downtime start time |
+| J–K | 9–10 | Downtime end time |
 
 <Note>
   T1 and T2 are currently configured as **PLAN STOP** machines. They will always show `0` in shift reports regardless of what is recorded in the spreadsheet. If T1 or T2 become active in the future, contact your administrator to update the machine configuration in `cron-report.js`.

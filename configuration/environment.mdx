@@ -1,16 +1,16 @@
 ---
-title: "Environment Variables for TCBot Configuration"
+title: "TCBot Environment Setup: GEMINI_API_KEY Configuration"
 sidebarTitle: "Environment"
-description: "Configure TCBot using a .env file. The only required variable is GEMINI_API_KEY — here's how to get it and set it up."
+description: "Configure TCBot with a .env file. GEMINI_API_KEY is the only required variable — the bot exits immediately on startup if it is missing."
 ---
 
-TCBot reads its configuration from a `.env` file in the project root. The only required environment variable is your Google Gemini API key, which powers the AI label scanning and data chat features.
+TCBot reads its runtime configuration from a `.env` file placed in the project root. The **only** environment variable the bot requires is your Google Gemini API key, which powers both the AI label scanner (`/input`) and the AI chat feature (`/ngobrol`). WhatsApp session credentials are stored in the `auth_info_baileys/` folder automatically by Baileys and do not require any environment variable.
 
 ## Required variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `GEMINI_API_KEY` | ✅ Yes | Google Gemini AI API key for OCR and chat features |
+| `GEMINI_API_KEY` | ✅ Yes | Google Gemini AI API key for OCR label scanning and AI chat |
 
 Place the variable in a `.env` file at the root of your TCBot project:
 
@@ -39,7 +39,7 @@ GEMINI_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   TCBot will refuse to start if `GEMINI_API_KEY` is missing or empty. You'll see the following error in the terminal:
 
   ```
-  ❌ ERROR: GEMINI_API_KEY not found in environment!
+  ❌ ERROR: GEMINI_API_KEY tidak ditemukan di environment! Pastikan file .env sudah dibuat.
   ```
 
   Make sure the `.env` file exists in the project root and that the variable is set before starting the bot.
