@@ -1,0 +1,110 @@
+---
+title: "Automated Shift Production Reports via WhatsApp"
+sidebarTitle: "Shift Report"
+description: "TCBot automatically compiles and delivers shift production reports to your WhatsApp group, pulling live data from Google Sheets for all active treating lines."
+---
+
+TCBot's automated shift report collects production output, reject counts, and downtime from your Google Sheets and delivers a formatted summary directly to your WhatsApp group — no manual data compilation required.
+
+## What's in the report
+
+Each shift report includes the following information:
+
+- **Report header** — report title, day and date, shift number, team name, working hours, and total downtime
+- **Per-machine sections** — one block per treating line (Treating 1 through Treating 6), each showing:
+  - **Hasil** — output in sheets
+  - **Reject** — rejected sheets
+  - **DT** — downtime in hours
+  - **Kendala** — issue description or `PLAN STOP`
+
+<Note>
+Treating lines **T1** and **T2** are permanently marked as offline. They always appear in the report as `PLAN STOP` with zero output. Treating lines **T3**, **T4**, **T5**, and **T6** pull live data from Google Sheets.
+</Note>
+
+Here is an example of the report format delivered to your WhatsApp group:
+
+```text
+Laporan Hasil Treating - A1
+Hari & Tanggal  =  Monday, 1 June 2025
+Shift           =  2
+Tim             =  [team name]
+Jam Kerja       =  7
+Total DT        =  1,50
+
+--------------------
+Treating 1
+Hasil       =  0  sheets
+Reject     =   0  sheets
+DT    =   0  jam
+Kendala =  PLAN STOP
+--------------------
+Treating 2
+Hasil       =  0  sheets
+Reject     =   0  sheets
+DT    =   0  jam
+Kendala =  PLAN STOP
+--------------------
+Treating 3
+Hasil       =  2500  sheets
+Reject     =   12  sheets
+DT    =   0,50  jam
+Kendala =  Material delay
+--------------------
+Treating 4
+Hasil       =  2300  sheets
+Reject     =   8  sheets
+DT    =   1,00  jam
+Kendala =  Machine maintenance
+--------------------
+Treating 5
+Hasil       =  2100  sheets
+Reject     =   5  sheets
+DT    =   0  jam
+Kendala =  -
+--------------------
+Treating 6
+Hasil       =  1950  sheets
+Reject     =   3  sheets
+DT    =   0  jam
+Kendala =  -
+```
+
+## Shift detection
+
+The script automatically determines which shift to report on based on the hour it runs. You do not need to pass any arguments — just execute the script within the correct time window for each shift.
+
+| Shift | Trigger window |
+|-------|---------------|
+| Shift 1 | 05:00 – 07:00 |
+| Shift 2 | 13:00 – 15:00 |
+| Shift 3 | 21:00 – 23:00 |
+
+<Tip>
+Schedule your cron jobs to fire within these windows. See [Scheduling](/reports/scheduling) for ready-to-use cron expressions for each shift.
+</Tip>
+
+## Webhook-based report delivery
+
+TCBot posts the compiled report to the local webhook server (`POST http://localhost:8080/`) which then forwards it to your configured WhatsApp group. The same webhook endpoint also supports sending rendered PDF or image attachments from CraftMyPDF alongside the report text.
+
+Use the following payload shape when calling the webhook directly:
+
+```json
+{
+  "targetJid": "628xxx@g.us",
+  "message": "Report text here",
+  "fileUrl": "https://craftmypdf.com/render/...",
+  "isPdf": true
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `targetJid` | `string` | No | WhatsApp group or contact JID to deliver the report to. Defaults to the configured production group (`628817433101-1550727854@g.us`). |
+| `message` | `string` | Yes | The text message sent alongside the file or on its own. |
+| `fileUrl` | `string` | No | URL of a rendered PDF or image from CraftMyPDF. Omit to send text only. |
+| `isPdf` | `boolean` | No | Set to `true` to send the file as a PDF attachment. Set to `false` to send it as an image with caption. |
+
+<Note>
+The webhook listens on **port 8080**. Make sure the machine running `server.js` is reachable on that port from wherever you trigger the report script.
+</Note>

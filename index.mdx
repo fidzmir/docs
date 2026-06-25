@@ -1,20 +1,62 @@
 ---
-title: "Introduction"
-description: "Welcome to your project"
+title: "TCBot: WhatsApp Automation for Manufacturing Operations"
+sidebarTitle: "Home"
+description: "TCBot connects your production floor to WhatsApp — manage TPM tags, scan labels with AI, and receive automated shift reports without leaving the chat."
 ---
 
-Write a short description of your product here. What it does, who it's for, and what they can accomplish with it.
+TCBot is a WhatsApp-powered automation assistant built for manufacturing production teams. Operators on the floor can create and close TPM red tags, scan product labels using AI-powered OCR, query live production data, and receive automated shift reports — all from within WhatsApp, with no separate app required.
 
-<Tip>
-  Ready to make this your own? Start by editing this page. Update your `docs.json` file to customize your site. Then fill out the [Quickstart](/quickstart) page.
-</Tip>
+<CardGroup cols={2}>
+  <Card title="Introduction" icon="book-open" href="/introduction">
+    Learn what TCBot does and how it fits into your production workflow.
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Send your first bot command and get a response in minutes.
+  </Card>
+  <Card title="Bot Commands" icon="terminal" href="/commands/overview">
+    Full reference for every command available to operators.
+  </Card>
+  <Card title="Automated Reports" icon="chart-bar" href="/reports/shift-report">
+    Set up automatic shift production reports sent to your WhatsApp group.
+  </Card>
+</CardGroup>
 
-<Card title="Quickstart" icon="rocket" href="/quickstart">
-  This card links to the quickstart page in your project.
-</Card>
-<Card title="Components" icon="puzzle-piece" href="https://mintlify.com/docs/components">
-  Add cards, callouts, steps, tabs, and more to design and structure your pages.
-</Card>
-<Card title="Settings" icon="gear" href="https://mintlify.com/docs/organize/settings">
-  Set your site name, branding, and navigation in the `docs.json` file.
-</Card>
+## What TCBot Can Do
+
+TCBot brings your production data and workflows directly into WhatsApp conversations. No new apps to install for operators — if they have WhatsApp, they can use TCBot.
+
+<CardGroup cols={2}>
+  <Card title="TPM Red Tags" icon="tag" href="/commands/red-tag">
+    Create, view, and close maintenance red tags with guided step-by-step prompts and photo evidence.
+  </Card>
+  <Card title="AI Label Scanning" icon="camera" href="/commands/ocr-input">
+    Photograph a product label and let AI extract and validate the lot number automatically.
+  </Card>
+  <Card title="Tag Management" icon="list-check" href="/commands/tag-management">
+    List all open tags or view full details of any specific tag by its code.
+  </Card>
+  <Card title="AI Data Chat" icon="comments" href="/commands/ai-chat">
+    Ask natural language questions about your production sheet data and get instant answers.
+  </Card>
+</CardGroup>
+
+## How It Works
+
+<Steps>
+  <Step title="Operator opens WhatsApp">
+    Your team uses the same WhatsApp they already have. No additional apps, no logins.
+  </Step>
+  <Step title="Send a bot command">
+    Type a command like `/am`, `/input 33G198`, or `/openlist` to start a workflow.
+  </Step>
+  <Step title="Bot guides the interaction">
+    TCBot walks the operator through each step — collecting data, photos, and confirmations.
+  </Step>
+  <Step title="Data saved to Google Sheets">
+    Completed entries are written directly to your connected Google Sheets in real time.
+  </Step>
+</Steps>
+
+<Note>
+  TCBot is administered by your operations team. If you're an operator looking to get started, see the [Quick Start](/quickstart) guide.
+</Note>

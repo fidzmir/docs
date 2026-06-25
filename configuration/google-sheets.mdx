@@ -1,0 +1,105 @@
+---
+title: "Connect TCBot to Google Sheets for Tag and Report Data"
+sidebarTitle: "Google Sheets"
+description: "Set up the Google Sheets integration that powers TCBot's red tag storage, data queries, and automated shift report generation."
+---
+
+TCBot integrates with Google Sheets in two ways: via Google Apps Script for real-time tag management and queries, and via the Sheets API v4 with a service account for automated report generation.
+
+## Apps Script integration (tag management)
+
+The Apps Script integration handles all live, operator-facing commands:
+
+- **Commands powered by this integration:** `/am`, `/close`, `/open`, `/openlist`, `/ngobrol`, `/cek`
+- **Supported actions:** `saveTag`, `closeTag`, `getList`, `getDetail`, `getRawData`
+
+Your Google Apps Script web app receives HTTP POST requests from TCBot and reads or writes tag data in your spreadsheet. The script URL is configured directly in the bot's handler files — contact your administrator if the URL needs to be updated.
+
+<Note>
+  When deploying your Apps Script as a web app, set **Who has access** to **Anyone**. This allows the TCBot server to POST requests to the script without authentication headers.
+</Note>
+
+### TPM sheet structure
+
+Your Google Spreadsheet must contain a separate tab for each production department. TCBot recognises the following sheet names by default:
+
+- `Produksi HPL`
+- `Produksi Adhesive`
+- `Produksi Flooring`
+- `Produksi PVC Cikupa`
+
+Each row in these sheets represents one tag record. Make sure each record includes the following fields:
+
+| Field | Description |
+|-------|-------------|
+| Tag code | Unique identifier for the red tag |
+| Status | `OPEN` or `CLOSE` |
+| Date | Date the tag was raised |
+| Machine | Machine or asset name |
+| Reporter | Name of the person who raised the tag |
+| Abnormality | Type of abnormality observed |
+| Contamination | Contamination details (if applicable) |
+| Hard-to-access | Hard-to-access area details (if applicable) |
+| Description | Free-text description of the issue |
+| Photo URL | Public URL to the attached photo |
+
+## Service account integration (shift reports)
+
+The `cron-report.js` script uses a Google Service Account to read production output data directly from your spreadsheets via the Sheets API v4, then sends automated shift reports to WhatsApp.
+
+### Setting up the service account
+
+<Steps>
+  <Step title="Open Google Cloud Console">
+    Go to [Google Cloud Console](https://console.cloud.google.com) and sign in.
+  </Step>
+  <Step title="Select or create a project">
+    Create a new project or select an existing one to host the service account.
+  </Step>
+  <Step title="Enable the Google Sheets API">
+    In the left menu, go to **APIs & Services → Library**, search for **Google Sheets API**, and click **Enable**.
+  </Step>
+  <Step title="Create a service account">
+    Go to **IAM & Admin → Service Accounts**, then click **Create Service Account**. Give it a descriptive name (for example, `tcbot-reports`) and complete the creation flow.
+  </Step>
+  <Step title="Download the JSON key">
+    Open the service account you just created, go to the **Keys** tab, click **Add Key → Create new key**, and select **JSON**. Save the downloaded file as `credentials.json` in the TCBot project root.
+  </Step>
+  <Step title="Share your spreadsheets with the service account">
+    Copy the service account's email address (visible on the service accounts list — it looks like `name@project.iam.gserviceaccount.com`). Open each of your production spreadsheets in Google Sheets and share them with that email. View-only access is sufficient.
+  </Step>
+</Steps>
+
+<Warning>
+  `credentials.json` contains a private key that grants access to any spreadsheet shared with the service account. Keep it secret and never commit it to version control. Add it to your `.gitignore` immediately:
+
+  ```bash .gitignore
+  credentials.json
+  ```
+</Warning>
+
+### Production spreadsheet structure
+
+The cron report reads data from four machine sheets — T3 through T6 — split across two spreadsheets. For the shift report to calculate output and reject totals correctly, each sheet must follow this column layout:
+
+| Machine | Spreadsheet | Sheet Tab | Output Column | Reject Column |
+|---------|-------------|-----------|---------------|---------------|
+| T3 | `SPREADSHEET_ID_B` | `T3` | AV (index 47) | AY (index 50) |
+| T4 | `SPREADSHEET_ID_B` | `T4` | AV (index 47) | AY (index 50) |
+| T5 | `SPREADSHEET_ID_C` | `T5` | BB (index 53) | BT (index 71) |
+| T6 | `SPREADSHEET_ID_C` | `T6` | BB (index 53) | BT (index 71) |
+
+In addition, each row must include the following columns for the report to group data correctly by shift:
+
+| Column | Content | Format |
+|--------|---------|--------|
+| A | Date | `dd/MM/yyyy` |
+| C | Team name | Text |
+| D | Shift number | Number |
+| H | Downtime reason | Text |
+| I | Downtime start time | Time |
+| J | Downtime end time | Time |
+
+<Note>
+  T1 and T2 are currently configured as **PLAN STOP** machines. They will always show `0` in shift reports regardless of what is recorded in the spreadsheet. If T1 or T2 become active in the future, contact your administrator to update the machine configuration in `cron-report.js`.
+</Note>

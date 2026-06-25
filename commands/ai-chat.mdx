@@ -1,0 +1,99 @@
+---
+title: "Query Production Data with AI Using /ngobrol"
+sidebarTitle: "AI Chat (/ngobrol)"
+description: "Use /ngobrol to ask natural language questions about your production sheet data. TCBot fetches live data and answers using Google Gemini AI."
+---
+
+The `/ngobrol` command lets you have a free-form conversation with your production data. TCBot pulls the latest data from your Google Sheet for the specified department and uses Google Gemini AI to answer your questions — no formulas, no filtering, just ask.
+
+## Syntax
+
+```text
+/ngobrol [DEPT] [your question]
+```
+
+## Department Options
+
+| Code | Sheet |
+|------|-------|
+| `HPL` | Produksi HPL |
+| `ADH` | Produksi Adhesive |
+| `FLR` | Produksi Flooring |
+| `PVC` | Produksi PVC Cikupa |
+
+## Example Questions
+
+```text
+/ngobrol HPL berapa tag yang masih open?
+/ngobrol ADH mesin apa yang paling sering muncul di tag?
+/ngobrol FLR tampilkan semua tag dengan abnormality Bocor
+/ngobrol PVC how many tags were created this month?
+```
+
+## How to Use /ngobrol
+
+<Steps>
+  <Step title="Ask your first question">
+    Type `/ngobrol` followed by the department code and your question.
+
+    ```text
+    You: /ngobrol HPL how many open tags are there?
+    TCBot: Based on the current data for Produksi HPL,
+           there are 4 open tags.
+    ```
+  </Step>
+
+  <Step title="Continue the conversation">
+    Reply with a follow-up question — **no command prefix needed**. TCBot maintains the conversation context and continues answering based on the same department's data.
+
+    ```text
+    You: which machine appears most often?
+    TCBot: Calender machine appears in 3 of the 4 tags.
+    ```
+
+    <Tip>
+      Ask follow-up questions in either Bahasa Indonesia or English — TCBot understands both and will match the language you use.
+    </Tip>
+  </Step>
+
+  <Step title="End the conversation">
+    Start a new command (e.g., `/am`, `/openlist`) or send `/cancel` to end the current conversation context.
+
+    <Note>
+      The conversation context ends as soon as you start a new command or use `/cancel`. Your next `/ngobrol` call always begins a fresh conversation with up-to-date data.
+    </Note>
+  </Step>
+</Steps>
+
+## Sample Conversation
+
+```text
+You: /ngobrol HPL how many open tags are there?
+TCBot: Based on the current data for Produksi HPL,
+       there are 4 open tags.
+
+You: which machine appears most often?
+TCBot: Calender machine appears in 3 of the 4 tags.
+
+You: tampilkan detail semua tag dengan abnormality Bocor
+TCBot: There are 2 tags with Bocor abnormality:
+       • AM-HPL-0001 — Calender, reported by Ahmad
+       • AM-HPL-0004 — Laminator, reported by Budi
+```
+
+---
+
+## Query the Spreadsheet Directly — `/cek`
+
+**Syntax:** `/cek [query]`
+
+The `/cek` command runs your query directly against the connected Google Spreadsheet macro and returns the result as plain text. Use it for fast, structured lookups when you already know what you are looking for.
+
+```text
+You: /cek AM-HPL-0001
+TCBot: AM-HPL-0001 | OPEN | 01/06/2025 | Calender | Ahmad
+```
+
+<Note>
+  `/cek` queries the spreadsheet macro directly and returns raw data. For natural language analysis and follow-up questions, use `/ngobrol` instead.
+</Note>

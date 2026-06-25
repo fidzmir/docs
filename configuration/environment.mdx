@@ -1,0 +1,54 @@
+---
+title: "Environment Variables for TCBot Configuration"
+sidebarTitle: "Environment"
+description: "Configure TCBot using a .env file. The only required variable is GEMINI_API_KEY — here's how to get it and set it up."
+---
+
+TCBot reads its configuration from a `.env` file in the project root. The only required environment variable is your Google Gemini API key, which powers the AI label scanning and data chat features.
+
+## Required variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GEMINI_API_KEY` | ✅ Yes | Google Gemini AI API key for OCR and chat features |
+
+Place the variable in a `.env` file at the root of your TCBot project:
+
+```bash .env
+GEMINI_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+## Getting your Gemini API key
+
+<Steps>
+  <Step title="Open Google AI Studio">
+    Go to [Google AI Studio](https://aistudio.google.com).
+  </Step>
+  <Step title="Sign in">
+    Sign in with your Google account.
+  </Step>
+  <Step title="Create an API key">
+    Click **Get API key** → **Create API key**.
+  </Step>
+  <Step title="Add the key to your .env file">
+    Copy the generated key and paste it as the value of `GEMINI_API_KEY` in your `.env` file.
+  </Step>
+</Steps>
+
+<Warning>
+  TCBot will refuse to start if `GEMINI_API_KEY` is missing or empty. You'll see the following error in the terminal:
+
+  ```
+  ❌ ERROR: GEMINI_API_KEY not found in environment!
+  ```
+
+  Make sure the `.env` file exists in the project root and that the variable is set before starting the bot.
+</Warning>
+
+<Note>
+  Keep your `.env` file private — never commit it to version control. Add `.env` to your `.gitignore` to prevent accidentally exposing your API key:
+
+  ```bash .gitignore
+  .env
+  ```
+</Note>

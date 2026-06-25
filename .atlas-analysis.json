@@ -1,0 +1,79 @@
+{
+  "projectType": "saas",
+  "projectName": "TCBot",
+  "projectDescription": "A WhatsApp-based automation bot for manufacturing operations that handles TPM red tag management, AI-powered label OCR, production shift reporting, and conversational data queries.",
+  "theme": "almond",
+  "primaryColor": "#25D366",
+  "lightColor": "#DCF8C6",
+  "darkColor": "#075E54",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "setup"
+            ]
+          },
+          {
+            "group": "Bot Commands",
+            "pages": [
+              "commands/overview",
+              "commands/red-tag",
+              "commands/ocr-input",
+              "commands/tag-management",
+              "commands/ai-chat"
+            ]
+          },
+          {
+            "group": "Automated Reports",
+            "pages": [
+              "reports/shift-report",
+              "reports/scheduling"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/environment",
+              "configuration/item-rules",
+              "configuration/google-sheets"
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "pages": [
+              "troubleshooting/common-issues",
+              "troubleshooting/session-reset"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "WhatsApp command interface for production floor operators",
+    "TPM Red Tag creation with multi-step guided workflow",
+    "AI-powered (Gemini) label OCR for lot number extraction and validation",
+    "Tag lifecycle management: open, view detail, close with photo proof",
+    "Automated shift production report generation and delivery",
+    "Natural language AI chat for querying production data from Google Sheets",
+    "Webhook endpoint for receiving and forwarding CraftMyPDF report files",
+    "Auto-reconnect and session management for persistent WhatsApp connection"
+  ],
+  "publicApiSurface": [
+    "/am — Start TPM Red Tag creation flow",
+    "/cek [query] — Query data from Google Spreadsheet",
+    "/openlist — List all open tags",
+    "/open [TAG_CODE] — View detail for a specific tag",
+    "/close [TAG_CODE] — Close a tag with photo proof",
+    "/input [ITEM_CODE] — Start AI OCR flow for label scanning",
+    "/ngobrol [DEPT] [question] — Chat with AI about production data",
+    "/cancel — Cancel any active flow",
+    "POST / — Webhook endpoint to receive and forward report files"
+  ]
+}

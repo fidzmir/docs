@@ -1,0 +1,77 @@
+---
+title: "TCBot Troubleshooting: Fix Common Issues"
+sidebarTitle: "Common Issues"
+description: "Solutions for the most common TCBot problems: unresponsive bot, OCR failures, timeout errors, photo rejections, and report delivery issues."
+---
+
+Most TCBot issues fall into a few common categories: connectivity problems, photo quality issues for OCR, and configuration errors. This page covers the most frequently encountered problems and how to resolve them.
+
+<Accordion title="Bot is not responding to my commands">
+  1. Check that the server is running by executing `node server.js` in your terminal.
+  2. Look for `✅ WHATSAPP CONNECTED!` in the terminal output to confirm the bot is online.
+  3. If the process has crashed, restart it.
+  4. If you see session errors (401 or 403), follow the [session reset guide](/troubleshooting/session-reset).
+</Accordion>
+
+<Accordion title='`/input` returns "NOT_FOUND"'>
+  The AI could not find a lot number matching the item's pattern in your photo. To fix this:
+
+  1. Ensure the label is in focus and well-lit before retaking the photo.
+  2. Make sure the barcode and **"Lot No."** area are clearly visible and not obstructed.
+  3. Verify that you are using the correct item code — use `/input [ITEM_CODE]` where `ITEM_CODE` must be one of the supported codes.
+  4. If the format looks correct but keeps failing, contact your administrator to verify the validation rule for that item code.
+</Accordion>
+
+<Accordion title="`/cek` command times out">
+  The Google Apps Script macro is taking too long or is temporarily unavailable.
+
+  1. Wait a minute and try the `/cek` command again.
+  2. If the issue persists, the Apps Script deployment may need to be checked — ask your administrator to verify the deployment is active and reachable.
+</Accordion>
+
+<Accordion title="Photo is rejected during `/am` or `/close` workflow">
+  TCBot only accepts WhatsApp image messages — not documents, PDFs, or text. To send your photo correctly:
+
+  1. Send the photo directly from your camera or gallery using the **image** attachment option.
+  2. Make sure you are sending a photo, not a file attachment — do not use the document or file icon when attaching.
+</Accordion>
+
+<Accordion title="Cron report not sending to WhatsApp group">
+  1. Verify that `server.js` is running and listening on port **8080**.
+  2. Check that `credentials.json` is present in the project directory and that the service account has been granted access to the relevant spreadsheets.
+  3. Verify that the cron job timing matches the correct shift window:
+     - **Shift 1:** 05:00–07:00
+     - **Shift 2:** 13:00–15:00
+     - **Shift 3:** 21:00–23:00
+  4. Run `node cron-report.js` manually and check the terminal output for errors.
+</Accordion>
+
+<Accordion title="AI saved an incorrect lot number">
+  The AI may have extracted a number from the wrong part of the label.
+
+  1. Retake the photo with better framing, focusing clearly on the barcode area and the **"Lot No."** label text.
+  2. Ensure the image is sharp and the relevant text is not cut off or obscured.
+  3. Contact your administrator if a correction is needed directly in Google Sheets.
+</Accordion>
+
+<Accordion title='TCBot exits immediately with a `GEMINI_API_KEY` error'>
+  The `.env` file is missing or the API key has not been set. To fix this:
+
+  1. Create a `.env` file in the project root and add your key:
+
+     ```env
+     GEMINI_API_KEY=your_key
+     ```
+
+  2. Get your API key from [Google AI Studio](https://aistudio.google.com).
+  3. Restart TCBot after adding the key.
+</Accordion>
+
+<Accordion title="`/am` workflow got stuck or bot stopped responding mid-flow">
+  1. Type `/cancel` to reset your current workflow state.
+  2. Start fresh with `/am`.
+</Accordion>
+
+<Tip>
+  If an issue persists after following these steps, ask your TCBot administrator to check the server logs for detailed error messages.
+</Tip>

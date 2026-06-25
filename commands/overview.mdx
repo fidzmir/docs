@@ -1,0 +1,45 @@
+---
+title: "TCBot Command Reference: All Available Commands"
+sidebarTitle: "Overview"
+description: "Complete list of all TCBot WhatsApp commands for production operators. Includes tag management, OCR scanning, AI chat, and data queries."
+---
+
+TCBot responds to typed commands in WhatsApp. All commands start with `/`. Send any command at any time — and use `/cancel` whenever you need to exit a flow and start fresh.
+
+## Quick Reference
+
+| Command | Description |
+|---|---|
+| `/am` | Create a new TPM Red Tag |
+| `/openlist` | List all open tags |
+| `/open [TAG_CODE]` | View tag details |
+| `/close [TAG_CODE]` | Close a tag with photo |
+| `/input [ITEM_CODE]` | Scan a product label with AI |
+| `/cek [query]` | Query production spreadsheet |
+| `/ngobrol [DEPT] [question]` | Chat with AI about production data |
+| `/cancel` | Cancel any active workflow |
+
+<Note>
+  Commands are case-insensitive. `/AM`, `/am`, and `/Am` all work the same way.
+</Note>
+
+<Tip>
+  Use `/cancel` at any step in a multi-step flow — such as `/am` or `/close` — to safely exit without saving any data. You can then start over with a fresh command.
+</Tip>
+
+## Command Details
+
+<CardGroup cols={2}>
+  <Card title="Red Tag (/am)" icon="tag" href="/commands/red-tag">
+    Create a new TPM Red Tag through a guided step-by-step flow. Covers sheet selection, machine details, abnormality, contamination, photo, and confirmation.
+  </Card>
+  <Card title="OCR Scan (/input)" icon="camera" href="/commands/ocr-input">
+    Photograph a product label and let TCBot's AI automatically read and validate the lot number before saving it to your Google Sheet.
+  </Card>
+  <Card title="Tag Management" icon="list-check" href="/commands/tag-management">
+    List all open TPM tags, inspect full tag details, and close resolved issues with photo evidence — all from WhatsApp.
+  </Card>
+  <Card title="AI Chat (/ngobrol)" icon="message-bot" href="/commands/ai-chat">
+    Ask free-form questions about your production data in Bahasa Indonesia or English. TCBot uses Google Gemini AI to answer from live sheet data.
+  </Card>
+</CardGroup>

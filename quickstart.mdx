@@ -1,47 +1,62 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: "Get Started with TCBot in 5 Minutes"
+sidebarTitle: "Quick Start"
+description: "Learn how to send your first TCBot command on WhatsApp and complete a sample red tag workflow from start to finish."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+You only need WhatsApp to use TCBot — no app downloads, no account registration. This guide walks you through sending your first commands and completing a full red tag creation workflow from start to finish.
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
-
-    ```bash
-    npm install your-package
-    ```
+  <Step title="Get the bot's WhatsApp number from your administrator">
+    TCBot runs on a WhatsApp number that your administrator sets up and manages. Ask your admin for the bot's number before you begin. You cannot discover it automatically — it must be provided to you.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
 
-    ```bash
-    your-cli init
-    ```
+  <Step title="Save the number in your contacts">
+    WhatsApp requires a number to be saved as a contact before you can send messages to it. Add the bot's number to your phone contacts with a recognizable name such as **TCBot** or **Production Bot**. Then open WhatsApp and confirm the contact appears in your chat list.
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
 
-    ```bash
-    your-cli start
+  <Step title="Send /openlist to verify your connection">
+    Open the TCBot chat and send your first command:
+
     ```
+    /openlist
+    ```
+
+    TCBot replies with a list of all currently open TPM tags. This is a safe, read-only command — it changes nothing and is the fastest way to confirm the bot is responding to your messages.
+  </Step>
+
+  <Step title="Send /am to create your first red tag">
+    Send the `/am` command to start a guided red tag creation flow. TCBot asks you a series of short questions — answer each one by replying with the number or text it requests.
+
+    Here is a sample conversation:
+
+    ```
+    You:    /am
+
+    TCBot:  Halo [Name]! Choose Sheet:
+            1. Produksi HPL
+            2. Produksi Adhesive
+            3. Produksi Flooring
+            4. Produksi PVC Cikupa
+
+    You:    1
+
+    TCBot:  ✅ Sheet: Produksi HPL
+            2. Dept Code (HPL/ADH/FLR/PVC):
+    ```
+
+    Continue replying to each prompt as TCBot guides you through department code, machine ID, defect description, and severity level.
+  </Step>
+
+  <Step title="Follow the prompts through to submission">
+    Answer each question TCBot asks until you reach the confirmation step. TCBot shows you a summary of the tag you are about to create. Reply to confirm, and the red tag is saved instantly.
   </Step>
 </Steps>
 
 <Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
-
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
+  At any point during a multi-step workflow — such as `/am` or `/input` — send `/cancel` to exit immediately. TCBot discards any partial input and returns to standby. Use this whenever you start a workflow by mistake or need to start over.
 </Tip>
+
+<Note>
+  When you confirm a red tag submission, TCBot saves the data directly to your team's connected Google Sheets. You do not need to do anything else — the record is immediately visible to supervisors and maintenance staff with access to the sheet.
+</Note>

@@ -1,0 +1,77 @@
+---
+title: "Scan Product Labels with AI Using /input"
+sidebarTitle: "OCR Scan (/input)"
+description: "Use /input [ITEM_CODE] to photograph a product label and have TCBot's AI automatically extract and validate the lot number for your Google Sheet."
+---
+
+The `/input` command uses Google Gemini AI to read lot numbers directly from a photo of a product label. TCBot validates the extracted number against the format rules for the item code you specify before saving the result to Google Sheets — eliminating manual transcription errors.
+
+## Syntax
+
+```text
+/input [ITEM_CODE]
+```
+
+**Example:** `/input 33G198`
+
+## Valid Item Codes
+
+Each item code expects a specific lot number format. Make sure the format area of the label is clearly visible in your photo.
+
+| Item Code | Expected Format |
+|-----------|----------------|
+| `30G161`, `33G198`, `36G161`, `36G198` | 4–5 digit number (e.g., `3015`) |
+| `30H160` | 14-digit number (e.g., `56100143010497`) |
+| `33F161`, `33F198`, `36F161` | 6 digits + letter `A` + 9 digits (e.g., `123456A123456789`) |
+| `33P160` | Pattern: `NNNNNN-XXXX-N-NN-NN` |
+| `33P150` | 6-digit prefix with optional separators |
+| `30R061` | 5 digits, dash, 1 letter, 1 digit (e.g., `12345-A1`) |
+| `35I161` | `HT` + 10 digits, or a 9–10 digit number |
+| `35O190` | 1 digit, 1 letter, 6 digits |
+
+## How to Scan a Label
+
+<Steps>
+  <Step title="Start the scan">
+    Type `/input` followed by the item code.
+
+    ```text
+    You: /input 33G198
+    ```
+
+    TCBot confirms the item code and prompts you to send a photo.
+
+    ```text
+    TCBot: ✅ Item Code: 33G198
+           Please send a photo of the product label.
+    ```
+  </Step>
+
+  <Step title="Send a clear photo">
+    Take and send a photo of the product label in WhatsApp.
+
+    <Tip>
+      Make sure the "Lot No." text and barcode area are clearly visible, in focus, and well-lit. Avoid glare, shadows, and extreme angles. A closer shot is usually better than a wide shot.
+    </Tip>
+
+    <Warning>
+      Only image photos are accepted. Sending a document file, video, or plain text will cause TCBot to ask you to retry with a valid photo.
+    </Warning>
+  </Step>
+
+  <Step title="AI analyzes the image">
+    TCBot sends the photo to Google Gemini AI, which locates and extracts the lot number, then validates it against the expected format for your item code.
+  </Step>
+
+  <Step title="Receive the result">
+    If a valid lot number is found and matches the expected format, TCBot logs it to Google Sheets and confirms success.
+
+    ```text
+    TCBot: ✅ Logged to Sheet! Item: 33G198 | Lot: 12345
+    ```
+
+    <Note>
+      If the AI cannot find a lot number that matches the item's expected format, TCBot replies with `NOT_FOUND` and the flow ends without saving anything. Try again with a clearer or closer photo of the label.
+    </Note>
+  </Step>
+</Steps>

@@ -1,0 +1,44 @@
+---
+title: "What Is TCBot? WhatsApp Bot for Production Teams"
+sidebarTitle: "Introduction"
+description: "TCBot is a WhatsApp automation assistant for manufacturing teams. Manage TPM tags, scan labels with AI, and query production data from any phone."
+---
+
+TCBot brings your production floor's maintenance workflows and data directly into WhatsApp — the app your operators already have on their phones. Instead of logging into a separate system or filling out paper forms, operators send a command, answer a few prompts, and TCBot handles the rest: creating TPM red tags, reading labels with AI, querying live production data, and delivering automated shift reports. No new app to install, no training on a new interface.
+
+## What TCBot Can Do
+
+TCBot organizes its capabilities into six key areas:
+
+<CardGroup cols={2}>
+  <Card title="TPM Red Tag Creation" icon="tag" href="/commands/red-tag">
+    Use `/am` to open a guided red tag creation flow. TCBot walks you through department, machine, defect type, and severity — then saves the completed tag directly to Google Sheets.
+  </Card>
+  <Card title="AI Label Scanner" icon="camera" href="/commands/ocr-input">
+    Use `/input` and send a photo of any production label. TCBot's AI (powered by Gemini) reads the label and logs the data automatically — no manual typing required.
+  </Card>
+  <Card title="Tag Management" icon="list-check" href="/commands/tag-management">
+    Use `/openlist` to see all open TPM tags, `/open` to inspect a tag, and `/close` to mark a tag as resolved. Every action is timestamped and logged.
+  </Card>
+  <Card title="AI Data Chat" icon="comments" href="/commands/ai-chat">
+    Use `/ngobrol` to ask free-form questions about your production data in natural language. TCBot queries your connected sheets and replies with a plain-language answer.
+  </Card>
+  <Card title="Production Query" icon="chart-bar" href="/commands/overview">
+    Use `/cek` to pull a snapshot of current production figures for any line or department — straight from Google Sheets, on demand.
+  </Card>
+  <Card title="Automated Shift Reports" icon="clock" href="/reports/shift-report">
+    TCBot sends scheduled shift summary reports to configured WhatsApp numbers or groups. No manual compilation needed at shift handover.
+  </Card>
+</CardGroup>
+
+## Who Uses TCBot
+
+TCBot is built for the three roles closest to the production floor:
+
+- **Production floor operators** — log defects, scan labels, and check output figures without leaving the line.
+- **Shift supervisors** — review open tags, close resolved issues, and receive automated end-of-shift summaries.
+- **Maintenance staff** — track and action TPM red tags from creation through resolution, entirely over WhatsApp.
+
+<Note>
+  To start using TCBot, you need the bot's WhatsApp number. Your administrator configures and hosts TCBot — contact them to get the number and save it in your contacts before sending any commands.
+</Note>

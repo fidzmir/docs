@@ -1,0 +1,84 @@
+---
+title: "Connect TCBot to Your WhatsApp Number"
+sidebarTitle: "Setup"
+description: "How administrators configure TCBot: scan the QR code, set environment variables, and connect Google Sheets for tag storage and reporting."
+---
+
+As an administrator, you set up TCBot once so every operator on your team can start using it immediately. Setup involves three things: providing your API keys in a `.env` file, installing dependencies, and scanning a QR code to link TCBot to a WhatsApp account. Once connected, the bot runs continuously and reconnects automatically after restarts.
+
+<Steps>
+  <Step title="Create a .env file with your API keys">
+    In the root of your TCBot project directory, create a file named `.env` and add the following:
+
+    ```bash .env
+    GEMINI_API_KEY=your_gemini_api_key_here
+    ```
+
+    TCBot uses the Gemini API to power AI label scanning (`/input`) and the natural language data chat (`/ngobrol`). To get your API key:
+
+    1. Go to [Google AI Studio](https://aistudio.google.com).
+    2. Sign in with your Google account.
+    3. Click **Get API key** and create a new key.
+    4. Copy the key and paste it as the value for `GEMINI_API_KEY` in your `.env` file.
+
+    Keep this file private — do not commit it to version control.
+  </Step>
+
+  <Step title="Install dependencies">
+    From the project root directory, run:
+
+    ```bash
+    npm install
+    ```
+
+    This installs all required Node.js packages, including the WhatsApp client library and Google Sheets integration.
+  </Step>
+
+  <Step title="Start TCBot">
+    Launch the bot with:
+
+    ```bash
+    node server.js
+    ```
+
+    The terminal begins initializing the WhatsApp client. Within a few seconds, it renders a QR code directly in the terminal output.
+  </Step>
+
+  <Step title="Scan the QR code with your WhatsApp account">
+    Use the WhatsApp account you want to act as the bot to scan the QR code displayed in the terminal:
+
+    1. Open **WhatsApp** on your phone.
+    2. Tap **Settings** (iOS) or the three-dot menu (Android).
+    3. Select **Linked Devices**.
+    4. Tap **Link a Device**.
+    5. Point your phone's camera at the QR code in the terminal.
+
+    WhatsApp confirms the link on your phone and the terminal begins the authentication handshake.
+  </Step>
+
+  <Step title="Verify the connection">
+    Watch the terminal output. Once authentication completes successfully, you will see:
+
+    ```
+    ✅ WHATSAPP CONNECTED!
+    ```
+
+    TCBot is now live. Operators can send commands to the bot's WhatsApp number immediately.
+  </Step>
+</Steps>
+
+## Session Persistence
+
+After a successful connection, TCBot saves the WhatsApp session locally in a folder called `auth_info_baileys/` in the project root. This means:
+
+- **You do not need to re-scan the QR code** every time the server restarts. TCBot reads the saved session and reconnects automatically.
+- The session remains valid as long as the linked WhatsApp account stays active and the bot is not logged out remotely.
+- Do not delete the `auth_info_baileys/` folder unless you intentionally want to reset the session.
+
+<Warning>
+  If the bot is logged out remotely — for example, if someone removes it from **Linked Devices** on the phone, or WhatsApp returns a 401 or 403 status — TCBot automatically clears the `auth_info_baileys/` folder to prevent a corrupted state. When this happens, restart the server with `node server.js` and re-scan the QR code to re-establish the connection.
+</Warning>
+
+<Note>
+  TCBot listens on port **8080** for incoming webhook requests. This port is used to trigger automated shift reports from external schedulers or cron jobs. If you use the cron report feature, ensure port 8080 is reachable from whatever system sends the trigger — check your firewall rules and, if the server is behind a load balancer or reverse proxy, confirm the port is forwarded correctly.
+</Note>

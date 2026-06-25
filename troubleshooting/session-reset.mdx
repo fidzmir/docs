@@ -1,0 +1,76 @@
+---
+title: "Reset TCBot WhatsApp Session After Logout"
+sidebarTitle: "Session Reset"
+description: "How to recover TCBot after a WhatsApp session expiry or logout event. Clear the saved session and re-scan the QR code to reconnect."
+---
+
+TCBot saves its WhatsApp login session locally so it can reconnect automatically after restarts. If the session expires or the bot account is logged out from another device, you'll need to re-scan the QR code to reconnect.
+
+## When a session reset is needed
+
+Perform a session reset when any of the following occur:
+
+- The terminal shows `❌ CONNECTION LOST! Status Code: 401` or `403`
+- The bot is no longer responding but the server is still running
+- The WhatsApp account was logged out from all linked devices
+- You intentionally want to switch to a different WhatsApp number
+
+## Automatic session clearing
+
+TCBot automatically detects status codes **401**, **403**, and **500** — all of which indicate a corrupted or logged-out session. When these occur, TCBot:
+
+1. Deletes the `auth_info_baileys/` folder automatically
+2. Exits the process safely
+
+After automatic clearing, you only need to restart TCBot and re-scan the QR code — no manual folder deletion is required.
+
+## Manual session reset
+
+If the automatic clearing did not complete or you want to force a clean reset, follow these steps:
+
+<Steps>
+  <Step title="Stop TCBot">
+    Stop the running TCBot process by pressing **Ctrl+C** in the terminal, or kill the process using your process manager.
+  </Step>
+  <Step title="Delete the session folder">
+    Remove the saved session data:
+
+    ```bash
+    rm -rf auth_info_baileys/
+    ```
+  </Step>
+  <Step title="Start TCBot again">
+    Launch the bot:
+
+    ```bash
+    node server.js
+    ```
+  </Step>
+  <Step title="Scan the QR code">
+    A QR code appears in the terminal. On the bot's phone, open WhatsApp and navigate to **Settings → Linked Devices → Link a Device**, then scan the QR code.
+  </Step>
+  <Step title="Confirm the connection">
+    The terminal displays `✅ WHATSAPP CONNECTED!` — the bot is live again.
+  </Step>
+</Steps>
+
+## Using PM2 for automatic restarts
+
+For production deployments, use PM2 to keep TCBot running reliably. Install and configure it with the following commands:
+
+```bash
+npm install -g pm2
+pm2 start server.js --name tcbot
+pm2 startup
+pm2 save
+```
+
+PM2 automatically restarts TCBot after network interruptions or server restarts (exit code **1**). However, a session reset (exit code **0**) requires a **manual restart and QR scan** — PM2 will not re-authenticate on your behalf.
+
+<Note>
+  Each QR scan links a new device to the WhatsApp account — old linked devices are not removed automatically. Manage your linked devices in the WhatsApp app under **Settings → Linked Devices**.
+</Note>
+
+<Warning>
+  If someone logs out the bot's WhatsApp account from their phone by removing the linked device, TCBot will disconnect immediately and require a full session reset before it can reconnect.
+</Warning>

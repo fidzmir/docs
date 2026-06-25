@@ -1,0 +1,65 @@
+---
+title: "Adding Item Codes and Lot Number Validation Rules"
+sidebarTitle: "Item Rules"
+description: "Configure which WIP item codes TCBot accepts for AI label scanning, and define the lot number format pattern each item code must match."
+---
+
+TCBot's AI label scanner validates extracted lot numbers against a set of rules defined per item code. You configure these rules in `config/rules.js` by mapping each WIP item code to a regular expression pattern.
+
+## How item rules work
+
+When an operator sends `/input [ITEM_CODE]` with a label photo, TCBot:
+
+1. Passes the photo to Gemini AI, which extracts candidate lot numbers from the image.
+2. Checks the extracted number against the regex pattern registered for that item code.
+3. Saves the lot number to Google Sheets if it matches the pattern.
+4. Asks the operator to try again if the extracted number does not match.
+
+This means every item code you want to support must have a corresponding entry in `config/rules.js` — if the item code is missing from the rules, the bot will reject the scan.
+
+## Current item rules
+
+The following item codes are configured out of the box:
+
+| Item Code | Pattern | Example |
+|-----------|---------|---------|
+| `30G161` | 4–5 digit number | `3015` or `12345` |
+| `33G198` | 4–5 digit number | `3015` |
+| `36G161` | 4–5 digit number | `3015` |
+| `36G198` | 4–5 digit number | `3015` |
+| `30H160` | 14-digit number | `56100143010497` |
+| `33F161` | 6 digits + `A` + 9 digits | `123456A123456789` |
+| `33F198` | 6 digits + `A` + 9 digits | `123456A123456789` |
+| `36F161` | 6 digits + `A` + 9 digits | `123456A123456789` |
+| `33P160` | `NNNNNN-XXXX-N-NN-NN` | `202501-HPL1-3-06-15` |
+| `33P150` | 6-digit prefix, optional segments | `202501` or `202501-A` |
+| `30R061` | 5 digits, dash, letter + digit | `12345-A1` |
+| `35I161` | `HT` + 10 digits, or 9–10 digits | `HT1234567890` or `701364976` |
+| `35O190` | digit + letter + 6 digits | `1A123456` |
+
+## Adding a new item code
+
+To add support for a new item, open `config/rules.js` and add an entry inside the `ITEM_RULES` object:
+
+```js config/rules.js
+const ITEM_RULES = {
+    // existing items...
+    "YOUR_ITEM_CODE": /your_regex_pattern_here/,
+};
+```
+
+Here are two common pattern examples to get you started:
+
+```js
+// 4-digit number only
+"NEWITEM1": /\b\d{4}\b/,
+
+// Alphanumeric code: 2 letters followed by 8 digits
+"NEWITEM2": /\b[A-Z]{2}\d{8}\b/,
+```
+
+Save the file and restart TCBot for the new rule to take effect.
+
+<Tip>
+  Test your regex pattern against real lot number examples before deploying. A pattern that is too broad will accept incorrect numbers; a pattern that is too strict will reject valid scans even when Gemini AI extracts them correctly. Use a tool like [regex101.com](https://regex101.com) to verify your pattern against several sample values.
+</Tip>

@@ -1,0 +1,93 @@
+---
+title: "Schedule Automatic TCBot Shift Reports with Cron"
+sidebarTitle: "Scheduling"
+description: "Learn how to schedule TCBot's shift report script to run automatically at the right time for each shift using cron or a task scheduler."
+---
+
+The shift report script runs on-demand or on a schedule. Use cron (Linux/macOS) or Task Scheduler (Windows) to trigger it automatically at the start of each shift's reporting window.
+
+## Running manually
+
+Run the script directly from your project directory at any time:
+
+```bash
+node cron-report.js
+```
+
+The script auto-detects the current shift based on the hour it runs — no flags or arguments needed. Run it inside the correct time window and it picks up the right shift automatically.
+
+<Note>
+If you run the script outside of any defined shift window (05:00–07:00, 13:00–15:00, or 21:00–23:00), it defaults to **Shift 2**. This is useful for testing but keep it in mind for production schedules.
+</Note>
+
+## Setting up cron
+
+Use `crontab -e` to open and edit your crontab on Linux or macOS. Add one line per shift, each pointing to your TCBot project directory.
+
+```bash
+# Run at 06:00 for Shift 1 report
+0 6 * * * cd /path/to/tcbot && node cron-report.js
+
+# Run at 14:00 for Shift 2 report
+0 14 * * * cd /path/to/tcbot && node cron-report.js
+
+# Run at 22:00 for Shift 3 report
+0 22 * * * cd /path/to/tcbot && node cron-report.js
+```
+
+Replace `/path/to/tcbot` with the absolute path to your TCBot project root (for example, `/home/ubuntu/tcbot`).
+
+<Tip>
+To redirect cron output to a log file for debugging, append `>> /var/log/tcbot-report.log 2>&1` to each line.
+</Tip>
+
+## Requirements
+
+Before the scheduled job fires, make sure the following are in place:
+
+- **TCBot server is running** — `server.js` must be active before any cron report fires. The report script posts to the local webhook at port 8080; if the server is down, delivery fails.
+- **Google Sheets credentials** — `credentials.json` must be present in the project root directory and have read access to the Sheets API.
+
+### Google Service Account setup
+
+<Steps>
+  <Step title="Create a service account">
+    Open the [Google Cloud Console](https://console.cloud.google.com/), navigate to **IAM & Admin → Service Accounts**, and create a new service account for TCBot.
+  </Step>
+  <Step title="Enable the Google Sheets API">
+    In the Cloud Console, go to **APIs & Services → Library**, search for **Google Sheets API**, and click **Enable**.
+  </Step>
+  <Step title="Download the JSON key">
+    In your service account's **Keys** tab, click **Add Key → Create new key**, select **JSON**, and download the file.
+  </Step>
+  <Step title="Save as credentials.json">
+    Rename the downloaded file to `credentials.json` and place it in the root of your TCBot project directory.
+  </Step>
+  <Step title="Share your spreadsheets">
+    Open each Google Spreadsheet that TCBot reads from, click **Share**, and add the service account email (for example, `tcbot@your-project.iam.gserviceaccount.com`) with **Viewer** access.
+  </Step>
+</Steps>
+
+<Warning>
+**Never commit `credentials.json` to version control.** It contains your service account's private key. Add it to `.gitignore` immediately to prevent accidentally exposing your credentials in a repository.
+</Warning>
+
+## Verifying the setup
+
+Run the script manually at any time to confirm everything is wired up correctly:
+
+```bash
+node cron-report.js
+```
+
+<Steps>
+  <Step title="Check terminal output">
+    A successful run prints `✅ Successfully sent via server.js!` to the terminal. Any configuration or network errors are printed there as well.
+  </Step>
+  <Step title="Confirm delivery in WhatsApp">
+    Open the target WhatsApp group and verify the formatted shift report arrived. Check that machine data, shift number, and downtime figures look correct.
+  </Step>
+  <Step title="Inspect logs (if using cron)">
+    If you redirected cron output to a log file, run `tail -f /var/log/tcbot-report.log` to watch for success or error messages from scheduled runs.
+  </Step>
+</Steps>
