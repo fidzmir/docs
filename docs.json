@@ -43,7 +43,8 @@
             "pages": [
               "configuration/environment",
               "configuration/item-rules",
-              "configuration/google-sheets"
+              "configuration/google-sheets",
+              "configuration/webhook.mdx"
             ]
           },
           {

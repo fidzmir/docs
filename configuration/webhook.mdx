@@ -1,0 +1,85 @@
+---
+title: "TCBot Webhook Server: Receive Messages on Port 8080"
+sidebarTitle: "Webhook"
+description: "TCBot's server.js exposes an HTTP webhook endpoint on port 8080 that accepts POST requests and forwards the payload to the connected WhatsApp session."
+---
+
+TCBot's `server.js` exposes an HTTP webhook so other scripts and services can push messages into the bot's active WhatsApp session. The shift report script uses this endpoint to deliver scheduled reports, and you can call it from any tool that can make an HTTP `POST` request.
+
+## Endpoint
+
+| Field | Value |
+| --- | --- |
+| Method | `POST` |
+| URL | Private — contact the maintainer for the external IP/URL |
+| Port | `8080` (`webook_port`) |
+| Auth | Restricted by IP (private endpoint) |
+
+The webhook is bound to the same process as the WhatsApp socket (`sock`). The bot must be running and connected to WhatsApp before the endpoint will accept payloads.
+
+<Note>
+  The external IP for receiving `POST` requests is kept private for security reasons. Contact the maintainer directly to request the webhook URL.
+</Note>
+
+## How it works
+
+The handler in `server.js` validates the request, immediately acknowledges the sender, and then processes the payload asynchronously:
+
+```js server.js
+app.post("/", async (req, res) => {
+  if (!req.body || !sock) return res.status(400).send("ERROR");
+  res.status(200).send("RECEIVED");
+
+  try {
+    // forward req.body to the active WhatsApp session via sock
+  } catch (err) {
+    console.error(err);
+  }
+});
+```
+
+### Response codes
+
+| Status | Meaning |
+| --- | --- |
+| `200 RECEIVED` | Request body is valid and the WhatsApp socket is connected. The payload will be processed asynchronously. |
+| `400 ERROR` | Either the request body is empty/missing or the WhatsApp socket (`sock`) is not yet connected. |
+
+<Note>
+  The endpoint returns `200` **before** the message is actually sent to WhatsApp. Errors that occur while delivering the message are logged on the server — they are not reflected in the HTTP response.
+</Note>
+
+## Sending a test request
+
+With `server.js` running, send a `POST` to the private webhook URL (replace `<WEBHOOK_URL>` with the URL provided by the maintainer):
+
+```bash
+curl -X POST <WEBHOOK_URL> \
+  -H "Content-Type: application/json" \
+  -d '{"to": "6281234567890@s.whatsapp.net", "text": "Hello from webhook"}'
+```
+
+A successful call returns the plain-text body `RECEIVED`. If you get `ERROR`, check that:
+
+- `server.js` is running and finished scanning the QR code
+- The request body is valid JSON
+- You are calling the correct port (`8080`)
+
+## Port configuration
+
+The webhook port is defined by the `webook_port` constant in `server.js`:
+
+```js server.js
+const webook_port = 8080;
+```
+
+Change the value and restart the bot if port `8080` is already in use on your host. Any client that posts to the webhook (including `cron-report.js`) must be updated to match.
+
+<Warning>
+  The webhook URL is private and access is restricted by IP. Do not share the external URL publicly or commit it to version control. If you need a new client added to the allowlist, contact the maintainer.
+</Warning>
+
+## Related
+
+- [Shift Report](/reports/shift-report) — the report payload that is posted to this webhook.
+- [Scheduling](/reports/scheduling) — `cron-report.js` posts to this endpoint at each shift boundary.
